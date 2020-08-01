@@ -11,6 +11,8 @@ import 'package:usb_serial/usb_serial.dart';
 
 void main() => runApp(MyApp());
 
+List<int> serialData1 = [];
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -21,7 +23,6 @@ class _MyAppState extends State<MyApp> {
   // ignore: unused_field
   String _status = "Idle";
   List<Widget> _ports = [];
-  List<int> _serialData1 = [];
   List<GraphPoint> data1 = [];
   // List<int> _serialData2 = [];
   // List<int> _serialData3 = [];
@@ -33,7 +34,7 @@ class _MyAppState extends State<MyApp> {
   TextEditingController _textController = TextEditingController();
 
   Future<bool> _connectTo(device) async {
-    _serialData1.clear();
+    serialData1.clear();
 
     if (_subscription != null) {
       _subscription.cancel();
@@ -78,10 +79,9 @@ class _MyAppState extends State<MyApp> {
     _subscription = _transaction.stream.listen((String line) {
       setState(() {
         var workingArr = line.split(' ');
-        _serialData1.add(hexToDec(workingArr[0]));
-        if (_serialData1.length > 1024) _serialData1.clear();
+        serialData1.add(hexToDec(workingArr[0]));
         // data1.add(valuesToPoints(hexToDec(workingArr[0])));
-        // if (data1.length > 1024) data1.clear();
+        if (serialData1.length > 1024) serialData1.removeAt(1);
       });
     });
 
@@ -142,8 +142,7 @@ class _MyAppState extends State<MyApp> {
         child: Column(
           children: <Widget>[
             ..._ports,
-            Text(_serialData1.toString()),
-            // Graph(),
+            Expanded(child: Graph()),
           ],
         ),
       ),
