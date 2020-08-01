@@ -5,13 +5,17 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_esp32_usb_serial/graph.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:usb_serial/transaction.dart';
 import 'package:usb_serial/usb_serial.dart';
+
+import 'channelSelectors.dart';
 
 void main() => runApp(MyApp());
 
 List<int> serialData1 = [];
+List<int> serialData2 = [];
+List<int> serialData3 = [];
+bool isActive = false;
 
 class MyApp extends StatefulWidget {
   @override
@@ -21,11 +25,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   UsbPort _port;
   // ignore: unused_field
-  String _status = "Idle";
+  String status = "Idle";
   List<Widget> _ports = [];
   List<GraphPoint> data1 = [];
-  // List<int> _serialData2 = [];
-  // List<int> _serialData3 = [];
+  List<GraphPoint> data2 = [];
+  List<GraphPoint> data3 = [];
 
   StreamSubscription<String> _subscription;
   Transaction<String> _transaction;
@@ -35,6 +39,8 @@ class _MyAppState extends State<MyApp> {
 
   Future<bool> _connectTo(device) async {
     serialData1.clear();
+    serialData2.clear();
+    serialData3.clear();
 
     if (_subscription != null) {
       _subscription.cancel();
@@ -54,7 +60,8 @@ class _MyAppState extends State<MyApp> {
     if (device == null) {
       _deviceId = null;
       setState(() {
-        _status = "Disconnected";
+        status = "Disconnected";
+        isActive = false;
       });
       return true;
     }
@@ -62,7 +69,8 @@ class _MyAppState extends State<MyApp> {
     _port = await device.create();
     if (!await _port.open()) {
       setState(() {
-        _status = "Failed to open port";
+        status = "Failed to open port";
+        isActive = false;
       });
       return false;
     }
@@ -80,13 +88,17 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         var workingArr = line.split(' ');
         serialData1.add(hexToDec(workingArr[0]));
-        // data1.add(valuesToPoints(hexToDec(workingArr[0])));
-        if (serialData1.length > 1024) serialData1.removeAt(1);
+        serialData2.add(hexToDec(workingArr[1]));
+        serialData3.add(hexToDec(workingArr[2]));
+        if (serialData1.length > 1000) serialData1.removeAt(1);
+        if (serialData2.length > 1000) serialData2.removeAt(1);
+        if (serialData3.length > 1000) serialData3.removeAt(1);
       });
     });
 
     setState(() {
-      _status = "Connected";
+      status = "Connected";
+      isActive = true;
     });
     return true;
   }
@@ -138,12 +150,26 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            ..._ports,
-            Expanded(child: Graph()),
-          ],
+      home: SafeArea(
+        child: Material(
+          child: Column(
+            children: <Widget>[
+              if (!isActive) ..._ports,
+              if (isActive)
+                Expanded(
+                  flex: 1,
+                  child: ChannelSelectors(),
+                ),
+              Expanded(
+                flex: 4,
+                child: Graph(),
+              ),
+              Expanded(
+                flex: 4,
+                child: Text('Tu kiedyś będzie FFT'),
+              )
+            ],
+          ),
         ),
       ),
     );
