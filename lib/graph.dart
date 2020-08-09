@@ -27,9 +27,9 @@ class Graph extends StatelessWidget {
     return TimerBuilder.periodic(
         Duration(microseconds: 1), //updates every second
         builder: (context) {
-      List<GraphPoint> points0 = valuesToPoints(serialData1);
-      List<GraphPoint> points1 = valuesToPoints(serialData2);
-      List<GraphPoint> points2 = valuesToPoints(serialData3);
+      List<GraphPoint> points0 = valuesToPoints(serialData1 ?? [0, 0, 0]);
+      List<GraphPoint> points1 = valuesToPoints(serialData2 ?? [0, 0, 0]);
+      List<GraphPoint> points2 = valuesToPoints(serialData3 ?? [0, 0, 0]);
       getSeriesData() {
         List<charts.Series<GraphPoint, int>> series = [
           if (isRedActive)

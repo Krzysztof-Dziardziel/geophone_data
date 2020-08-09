@@ -1,6 +1,4 @@
 import 'dart:async';
-// ignore: unused_import
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -9,6 +7,8 @@ import 'package:usb_serial/transaction.dart';
 import 'package:usb_serial/usb_serial.dart';
 
 import 'channelSelectors.dart';
+import 'fft.dart';
+import 'fftText.dart';
 
 void main() => runApp(MyApp());
 
@@ -90,9 +90,9 @@ class _MyAppState extends State<MyApp> {
         serialData1.add(hexToDec(workingArr[0]));
         serialData2.add(hexToDec(workingArr[1]));
         serialData3.add(hexToDec(workingArr[2]));
-        if (serialData1.length > 1000) serialData1.removeAt(1);
-        if (serialData2.length > 1000) serialData2.removeAt(1);
-        if (serialData3.length > 1000) serialData3.removeAt(1);
+        if (serialData1.length > 1024) serialData1.removeAt(1);
+        if (serialData2.length > 1024) serialData2.removeAt(1);
+        if (serialData3.length > 1024) serialData3.removeAt(1);
       });
     });
 
@@ -164,10 +164,14 @@ class _MyAppState extends State<MyApp> {
                 flex: 4,
                 child: Graph(),
               ),
-              Expanded(
-                flex: 4,
-                child: Text('Tu kiedyś będzie FFT'),
-              )
+              // Expanded(
+              //   flex: 4,
+              //   child: FFTWidget(),
+              // ),
+              // Expanded(
+              //   flex: 1,
+              //   child: FFTText(),
+              // )
             ],
           ),
         ),
