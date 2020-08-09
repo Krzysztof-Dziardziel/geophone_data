@@ -164,10 +164,10 @@ class _MyAppState extends State<MyApp> {
                 flex: 4,
                 child: Graph(),
               ),
-              // Expanded(
-              //   flex: 4,
-              //   child: FFTWidget(),
-              // ),
+              Expanded(
+                flex: 4,
+                child: FFTWidget(),
+              ),
               // Expanded(
               //   flex: 1,
               //   child: FFTText(),

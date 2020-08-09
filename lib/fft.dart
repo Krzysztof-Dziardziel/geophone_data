@@ -32,6 +32,7 @@ class _FFTWidgetState extends State<FFTWidget> {
     // var fft = new FFT().Transform(data.toList());
 
     var data = serialData1.map((element) => element.toDouble());
+
     var fft = new FFT().Transform(data.toList());
 
     var fftRePoints = fft.map((complex) => complex.imaginary.toInt());
