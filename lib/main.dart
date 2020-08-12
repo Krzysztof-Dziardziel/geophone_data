@@ -8,7 +8,6 @@ import 'package:usb_serial/usb_serial.dart';
 
 import 'channelSelectors.dart';
 import 'fft.dart';
-import 'fftText.dart';
 
 void main() => runApp(MyApp());
 
@@ -90,9 +89,9 @@ class _MyAppState extends State<MyApp> {
         serialData1.add(hexToDec(workingArr[0]));
         serialData2.add(hexToDec(workingArr[1]));
         serialData3.add(hexToDec(workingArr[2]));
-        if (serialData1.length > 1024) serialData1.removeAt(1);
-        if (serialData2.length > 1024) serialData2.removeAt(1);
-        if (serialData3.length > 1024) serialData3.removeAt(1);
+        if (serialData1.length > 1024) serialData1.removeAt(0);
+        if (serialData2.length > 1024) serialData2.removeAt(0);
+        if (serialData3.length > 1024) serialData3.removeAt(0);
       });
     });
 

@@ -11,9 +11,9 @@ class GraphPoint {
   GraphPoint(this.x, this.y);
 }
 
-valuesToPoints(List values) {
+valuesToPoints(List values, int len) {
   List<GraphPoint> points = new List();
-  for (var i = 1; i < 1000; i++) {
+  for (var i = 1; i < len; i++) {
     points.add(GraphPoint(i, values[i]));
   }
   return points;
@@ -27,9 +27,9 @@ class Graph extends StatelessWidget {
     return TimerBuilder.periodic(
         Duration(microseconds: 1), //updates every second
         builder: (context) {
-      List<GraphPoint> points0 = valuesToPoints(serialData1 ?? [0, 0, 0]);
-      List<GraphPoint> points1 = valuesToPoints(serialData2 ?? [0, 0, 0]);
-      List<GraphPoint> points2 = valuesToPoints(serialData3 ?? [0, 0, 0]);
+      List<GraphPoint> points0 = valuesToPoints(serialData1, 1000);
+      List<GraphPoint> points1 = valuesToPoints(serialData2, 1000);
+      List<GraphPoint> points2 = valuesToPoints(serialData3, 1000);
       getSeriesData() {
         List<charts.Series<GraphPoint, int>> series = [
           if (isRedActive)

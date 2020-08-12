@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:fft/fft.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_builder/timer_builder.dart';
@@ -18,28 +16,16 @@ class _FFTWidgetState extends State<FFTWidget> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    // Float64List reals = Float64List(1001);
 
-    // for (var i = 0; i <= 1000; i++) {
-    //   reals[i] = i.toDouble();
-    // }
+    var data = serialData1.map((element) => element.toDouble()).toList();
+    var window = new Window(WindowType.HAMMING);
 
-    // List serialDataFloat1 =
-    //     Float64List.fromList(serialData1.map((i) => i.toDouble()).toList());
-    // FFT.transform(reals, serialDataFloat1);
+    var fft = new FFT().Transform(window.apply(data));
 
-    // var data = serialData1.map((element) => element.toDouble());
-    // var fft = new FFT().Transform(data.toList());
-
-    var data = serialData1.map((element) => element.toDouble());
-
-    var fft = new FFT().Transform(data.toList());
-
-    var fftRePoints = fft.map((complex) => complex.imaginary.toInt());
+    var fftRePoints = fft.map((complex) => complex.modulus.toInt());
 
     return TimerBuilder.periodic(Duration(milliseconds: 1), builder: (context) {
-      List<GraphPoint> points0 =
-          valuesToPoints(fftRePoints.toList() ?? List.filled(512, 0));
+      List<GraphPoint> points0 = valuesToPoints(fftRePoints.toList(), 512);
       // List<GraphPoint> points1 = valuesToPoints(serialData2 ?? [0, 0, 0]);
       // List<GraphPoint> points2 = valuesToPoints(serialData3 ?? [0, 0, 0]);
       getSeriesData() {
