@@ -17,17 +17,27 @@ class _FFTWidgetState extends State<FFTWidget> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    var data = serialData1.map((element) => element.toDouble()).toList();
-    var window = new Window(WindowType.HAMMING);
+    // var data1 = serialData1.map((element) => element.toDouble()).toList();
+    // var data2 = serialData2.map((element) => element.toDouble()).toList();
+    // var data3 = serialData3.map((element) => element.toDouble()).toList();
+    // var window = new Window(WindowType.HAMMING);
 
-    var fft = new FFT().Transform(window.apply(data));
+    // var fft1 = new FFT().Transform(window.apply(data1));
 
-    var fftRePoints = fft.map((complex) => complex.modulus.toInt());
+    // var fftRePoints1 = fft1.map((complex) => complex.modulus.toInt());
+
+    doFFTPoints(List<num> serialData) {
+      var data = serialData.map((element) => element.toDouble()).toList();
+      var window = new Window(WindowType.HAMMING);
+      var fft = new FFT().Transform(window.apply(data));
+      var fftRePoints = fft.map((complex) => complex.modulus.toInt());
+      return valuesToPoints(fftRePoints.toList(), 500);
+    }
 
     return TimerBuilder.periodic(Duration(milliseconds: 1), builder: (context) {
-      List<GraphPoint> points0 = valuesToPoints(fftRePoints.toList(), 512);
-      // List<GraphPoint> points1 = valuesToPoints(serialData2 ?? [0, 0, 0]);
-      // List<GraphPoint> points2 = valuesToPoints(serialData3 ?? [0, 0, 0]);
+      List<GraphPoint> points0 = doFFTPoints(serialData1);
+      List<GraphPoint> points1 = doFFTPoints(serialData2);
+      List<GraphPoint> points2 = doFFTPoints(serialData3);
       getSeriesData() {
         List<charts.Series<GraphPoint, int>> series = [
           if (isRedActive)
@@ -38,22 +48,22 @@ class _FFTWidgetState extends State<FFTWidget> {
                 measureFn: (GraphPoint series, _) => series.y,
                 colorFn: (GraphPoint series, _) =>
                     charts.MaterialPalette.red.shadeDefault),
-          // if (isGreenActive)
-          //   charts.Series(
-          //       id: "1",
-          //       data: points1,
-          //       domainFn: (GraphPoint series, _) => series.x,
-          //       measureFn: (GraphPoint series, _) => series.y,
-          //       colorFn: (GraphPoint series, _) =>
-          //           charts.MaterialPalette.green.shadeDefault),
-          // if (isBlueActive)
-          //   charts.Series(
-          //       id: "2",
-          //       data: points2,
-          //       domainFn: (GraphPoint series, _) => series.x,
-          //       measureFn: (GraphPoint series, _) => series.y,
-          //       colorFn: (GraphPoint series, _) =>
-          //           charts.MaterialPalette.blue.shadeDefault)
+          if (isGreenActive)
+            charts.Series(
+                id: "1",
+                data: points1,
+                domainFn: (GraphPoint series, _) => series.x,
+                measureFn: (GraphPoint series, _) => series.y,
+                colorFn: (GraphPoint series, _) =>
+                    charts.MaterialPalette.green.shadeDefault),
+          if (isBlueActive)
+            charts.Series(
+                id: "2",
+                data: points2,
+                domainFn: (GraphPoint series, _) => series.x,
+                measureFn: (GraphPoint series, _) => series.y,
+                colorFn: (GraphPoint series, _) =>
+                    charts.MaterialPalette.blue.shadeDefault)
         ];
         return series;
       }

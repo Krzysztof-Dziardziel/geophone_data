@@ -108,7 +108,8 @@ class _MyAppState extends State<MyApp> {
     print(devices);
 
     devices.forEach((device) {
-      _ports.add(ListTile(
+      _ports.add(
+        ListTile(
           leading: Icon(Icons.usb),
           title: Text(device.productName),
           subtitle: Text(device.manufacturerName),
@@ -121,7 +122,9 @@ class _MyAppState extends State<MyApp> {
                 _getPorts();
               });
             },
-          )));
+          ),
+        ),
+      );
     });
 
     setState(() {
